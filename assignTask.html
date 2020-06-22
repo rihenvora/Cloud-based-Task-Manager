@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Insert TaskBoard Details</title>
+	</head>
+	<body>
+		{% if tskdb %}
+		Assign Member To {{taskname}}<br/>
+	  <p>Hello {{ user }}</p>
+	  <p>Hello {{ task }}</p>
+		<!--#name, manufacturer, year, battery size (Kwh), WLTP range(Km), cost, power (Kw).-->
+		<form method="post" action="/assignTask">
+			<input type="hidden" id="hdnid" name="hdnid" value=" {{tskdbid}}" />
+			<input type="hidden" id="hdntask" name="hdntask" value=" {{taskname}}" />
+			<table border="1"><thead><tr><th>ID</th><th>Name</th><th>Email</th></tr></thead>
+				<tbody>
+					{% for user in tskdb: %}
+					<tr><td>{{loop.index}}<input type="checkbox" name="ckuser" value="{{user.key.id()}}"></td><td>{{user.name}}</td><td>{{user.email_address}}</td></tr>
+					{% endfor %}
+				</tbody></table>
+			<input type="submit" value="Assign" name="button"/>
+			<br />
+			<br />
+			<input type="submit" value="Cancel" name="button"/>
+		</form>
+		<form method="post" action="/assignTask">
+
+		</form>
+		{% else %}
+	  <p>Hello guest welcome to the application</p>
+		<p>You Can Not Access This Unless You LogIn</p>
+	  {% endif %}
+	  <p>you can {{ url_string }} <a href='{{ url }}'>here</a></p>
+	</body>
+</html>

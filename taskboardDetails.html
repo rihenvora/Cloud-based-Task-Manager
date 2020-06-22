@@ -1,0 +1,139 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Index</title>
+</head>
+<body>
+
+  {% if tskdb %}
+  <p>Hello {{  user.email() }}</p>
+  <p> {{welcome}}</p>
+  <p>back To <a href='/'>Home</a></p>
+<div>
+  <div>
+      <fieldset style="width: fit-content;float:left; margin-right:10px;">
+        <legend>TaskBoard Actions</legend>
+        To Create TaskBoard Click Here <a href="/add" >Create</a><br /><br />
+        {%for tsk in showList%}
+        {% if user.email()==tsk.created_by: %}
+          To Edit TaskBoard Click Here <a href="/actionTaskBoard?key1={{tskdbid}}&key2=edit" >Edit</a><br /><br />
+          To Delete TaskBoard Click Here <a href="/actionTaskBoard?key1={{tskdbid}}&key2=delete" >Delete</a><br /><br />
+        {%endif%}
+        {%endfor%}
+      </fieldset>
+      <fieldset style="width: fit-content;">
+        <legend>Task Actions</legend>
+        To Create Task Click Here <a href="/addTask?key={{tskdbid}}" >Create</a><br /><br />
+    </fieldset>
+  </div>
+  <div style="margin:10px;">
+      {% for tsk in showList%}
+      <table border="1" style="text-align:center;">
+        <thead><tr><th colspan="4">Task Board Facts of {{tsk.taskboardname}}</th></tr><tr><th>Total Task</th><th>Active Task</th><th>Completed Task</th><th>Completed Today</th></thead>
+        <tbody><tr><td>{{total}}</td><td>{{active}}</td><td>{{complete}}</td><td>{{today}}</td></tr></tbody>
+      </table>
+      {%endfor%}
+  </div>
+</div>
+<div>
+  <fieldset style="color:red;width:fit-content;">
+    <legend>Note</legend>
+    <ul>
+      <li>You are not permitted to add TaskBoard Name which is already added to system.</li>
+      <li>If your Taskboard / Task is not visible try to reload page. </li>
+      <li>If your added Tash Board / Task is not seen that implise added Tash Board / Task is already exists. </li>
+    </ul>
+  </fieldset>
+</div>
+<hr />
+<div>
+    <form method="POST" action="/taskboardDetails"  style="float:left; margin-right:10px;">
+      <input type="hidden" id="hdnid" name="hdnid" value={{tskdbid}}>
+      {% for tsk in showList%}
+    <table border="1"><thead><tr><th colspan="5">Task Board Details of {{tsk.taskboardname}}</th></tr><tr><th>ID</th><th>Name</th><th>Email ID</th><th>Status</th><th>Action</th></thead><tbody>
+      {%endfor%}
+    {% for usr in listusr%}
+    <tr style=
+    {% for tsk in showList%}
+        {% if usr.key.id() == tsk.user_id : %}
+          "color:white;background-color:black; text-align:center;"
+        {% else: %}
+        "color:black;text-align:center;"
+        {%endif%}
+    {%endfor%}
+          ><td>{{loop.index}}</td><td>{{usr.name}}</td><td>{{usr.email_address}}</td>
+          {% for tsk in showList%}
+              {% if usr.key in tsk.user and usr.email_address == tsk.created_by : %}
+                <td colspan="2"> Owner </td>
+              {% elif usr.key in tsk.user: %}
+                {% if user.email() == tsk.created_by : %}
+                  <td> Participant </td>
+                  <td><a  href="/actionTaskBoard?key={{usr.key.id()}}&key1={{tskdbid}}&key2=remove">Remove</a></td>
+                {% else: %}
+                  <td colspan="2">Participant</td>
+                {%endif%}
+              {% else: %}
+                {% if user.email() == tsk.created_by : %}
+                  <td colspan="2"> <input type="checkbox" name="ckusr" value="{{usr.key.id()}}"/> </td>
+                {% else: %}
+                  <td colspan="2"> </td>
+                {%endif%}
+              {%endif%}
+          {%endfor%}
+        </tr>
+    {%endfor%}
+    </tbody></table>
+    {% for tsk in showList%}
+        {% if user.email() == tsk.created_by : %}
+          <input type="submit" value="Insert" name="button"/>
+        {%endif%}
+    {%endfor%}
+
+  </form>
+  {% for tsk in showList%}
+  <table border="1" style="text-align:center;"><thead><tr><th colspan="9">Task Details of {{tsk.taskboardname}}</th></tr><tr><th>ID</th><th>Name</th><th>Created By</th><th>Due Date</th><th>Status</th><th>Assign</th><th>Edit</th><th>Delete</th><th>Mark Complete</th></thead><tbody>
+  {%endfor%}
+  {% for tsk in showList%}
+  {% if tsk.task:  %}
+    {%for task in tsk.task%}
+    <tr {% if task.assignstatus == 2: %} style="color:red;" {%endif%} ><td>{{loop.index}}</td><td>{{task.taskname}}</td><td>{{task.created_by}}</td><td>{{task.due_date}}</td>
+      {% if task.status == "Pending" %}
+      <td>Incomplete</td>
+      {% if task.assignstatus != 1 %}
+      <td><a href="/assignTask?key={{tsk.key.id()}}&key1={{task.taskname}}">Assign</a></td>
+      {%else: %}
+        <td>Assigned to
+        {% for u in listusr %}
+            {% if task.taskname in u.taskassigned %}
+              {{u.name}}
+            {% endif %}
+        {% endfor %}
+        </td>
+      {%endif%}
+      <td><a href="/actionTask?key={{tsk.key.id()}}&key1={{task.taskname}}&key2=edit">Edit</a></td>
+      <td><a href="/actionTask?key={{tsk.key.id()}}&key1={{task.taskname}}&key2=delete">Delete</a></td>
+      {% if task.assignstatus == 1 %}
+      <td><a href="/actionTask?key={{tsk.key.id()}}&key1={{task.taskname}}&key2=complete">Complete</a></td>
+      {% else %}
+      <td></td>
+      {% endif %}
+      {%else:%}
+      <td colspan="4">Task Completed on {{task.complete_date}}</td>
+      <td><a href="/actionTask?key={{tsk.key.id()}}&key1={{task.taskname}}&key2=delete">Delete</a></td>
+      {%endif%}
+    </tr>
+    {%endfor%}
+    {%else%}
+    <tr><td colspan="9"> No Data Available</td></tr>
+    {%endif%}
+  {%endfor%}
+  </tbody></table>
+</div>
+  {% else %}
+  <p>Hello guest welcome to the application</p>
+  {% endif %}
+  <div style="top:0;">
+  <p>you can {{ url_string }} <a href='{{ url }}'>here</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Insert TaskBoard Details</title>
+	</head>
+	<body>
+		{% if tskdb %}
+		Insert TaskBoard Information Here<br/>
+	  <p>Hello {{ user }}</p>
+		<!--#name, manufacturer, year, battery size (Kwh), WLTP range(Km), cost, power (Kw).-->
+		<form method="post" action="/addTask">
+			<input type="hidden" id="hdnid" name="hdnid" value=" {{tskdbid}}" />
+			Name:<input type="text" id="name" name="name" required/>
+			<br />
+			<br />
+			Duedate:<input type="date" id="date" name="date" required/>
+			<br />
+			<br />
+			<input type="submit" value="Add" name="button"/>
+		</form>
+		<form method="post" action="/addTask">
+			<input type="hidden" id="hdnid1" name="hdnid" value=" {{tskdbid}}" />
+				<input type="submit" value="Cancel" name="button"/>
+		</form>
+		{% else %}
+	  <p>Hello guest welcome to the application</p>
+		<p>You Can Not Access This Unless You LogIn</p>
+	  {% endif %}
+	  <p>you can {{ url_string }} <a href='{{ url }}'>here</a></p>
+	</body>
+</html>

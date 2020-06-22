@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Index</title>
+</head>
+<body>
+  {% if tskdb %}
+  <p>Hello {{ user.email() }}</p>
+  <p> {{welcome}} </p>
+  <fieldset style="background:yellow; width: fit-content; border-color: transparent;">
+    <p style="color:red;text-transform:uppercase;"><b>Please reload page to Insert Your Name also after Insert or Removal Of Task Board</b></p>
+  </fieldset>
+    {% for t in showList %}
+      {% if t.name == None %}
+        <form method='POST' action='/'>
+          Name<input type="text" id="name" name="name" placeholder="Please Enter Your Name" required>
+          <input type="hidden" name="hdnid" id="hdnid" value={{t.key.id()}}>
+          <input type="submit" value="Add" name="button" />
+        </form>
+        {%else%}
+        <p>Hello {{t.name}}</p>
+        <p id="usrid" hidden>{{t.key.id()}}</p>
+      {%endif%}
+    {%endfor%}
+  To Create TaskBoard Click Here <a href="/add" >Create</a>
+  <hr />
+  {{keys}}
+  <table border="1"><thead><tr><th>ID</th><th>TaskBoard</th><th>Created By</th></tr></thead><tbody>
+
+    {% if keylen > 0 : %}
+      {%for tsb in showTaskB %}
+        {% if tsb != None%}
+        <tr><td>{{loop.index}}</td><td><a href="/taskboardDetails?key={{tsb.key.id()}}">{{tsb.taskboardname}}</a></td><td>{{tsb.created_by}}</td></tr>
+        {%else%}
+        <tr><td style="text-align:center; color: red;" colspan="3">No Data Available</td></tr>
+        {%endif%}
+      {%endfor%}
+    {%else%}
+        <tr><td style="text-align:center; color: red;" colspan="3">No Data Available</td></tr>
+    {%endif%}
+  {% else %}
+  <p>Hello guest welcome to the application</p>
+  {% endif %}
+  <p>you can {{ url_string }} <a href='{{ url }}'>here</a></p>
+</body>
+</html>
